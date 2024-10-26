@@ -1,0 +1,151 @@
+// const express = require('express')
+// const mongoose = require('mongoose')
+// const path = require('path');
+// const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcryptjs');
+// const { PrismaClient } = require('@prisma/client');
+// const cookieParser = require('cookie-parser');
+
+// const app = express();
+// const prisma = new PrismaClient();
+
+
+// app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'views')); // Use path module to set the views directory
+
+
+// const SECRET_KEY = process.env.JWT_SECRET || 'ADITYA_GUPTa';
+// function generateToken(user) {
+//     return jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, {
+//       expiresIn: '1h', // Token expiration time
+//     });
+//   }
+
+// function verifyToken(token) {
+//     return jwt.verify(token, SECRET_KEY);
+// }
+// const authenticateJwt = (req,res,next) => {
+//     const token = req.cookies.jwt;
+//     // console.log(token)
+//     if(token){
+//         try {
+//             // console.log(verifyToken(token))
+//             req.user = verifyToken(token)?.username;
+//         } catch (error) {
+//             res.json("Invalid Token")
+//         }
+//     }
+//     next()
+// }
+// //app-level middlewrae
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(cookieParser())
+
+// app.get('/', (req, res) => {
+//     res.render('login'); // Render the login/signup HTML
+// });
+
+// app.get('/signup', (req, res) => {
+//     res.render('signup'); // Render the login/signup HTML
+// });
+
+// app.get('/list',authenticateJwt,(req,res)=>{
+//     res.json("Hello")
+// })
+// app.post('/login', async (req, res) => {
+//     const { username, password } = req.body;
+
+//     // Validate input
+//     if (!username || !password) {
+//         return res.status(400).json({ error: 'Username and password are required' });
+//     }
+
+//     try {
+//         // Fetch user from the database
+//         const user = await prisma.user.findFirst({
+//             where: {
+//                 username: username.toLowerCase(),
+//             },
+//         });
+
+//         // Check if user exists
+//         if (!user) {
+//             return res.status(401).json({ error: 'User not found. Please check your username.' });
+//         }
+
+//         // Check if password matches
+//         const passwordMatch = await bcrypt.compare(password, user.password);
+//         if (!passwordMatch) {
+//             return res.status(401).json({ error: 'Incorrect password. Please try again.' });
+//         }
+
+//         // Generate JWT token and set it in a cookie
+//         const token = generateToken(user);
+//         res.cookie('jwt', token, { httpOnly: true }); // Store token in cookies
+//         return res.redirect('/list');
+
+//     } catch (error) {
+//         console.error(error); // Log the error for debugging
+//         return res.status(500).json({ error: 'An error occurred during login' });
+//     }
+
+// });
+
+
+
+//   app.post('/signUp', async (req, res) => {
+//     const { username, password } = req.body;
+
+//     console.log('Received:', { username, password });
+
+//     if (!username || !password) {
+//         return res.status(400).json({ error: 'Username and password are required' });
+//     }
+
+//     try {
+//         const hashedPassword = await bcrypt.hash(password, 10);
+//         console.log('Hashed Password:', hashedPassword);
+        
+//         let existingUser = await prisma.user.findFirst({
+//             where:{
+//                 username:username.toLowerCase()
+//             }
+//         })
+//         if (existingUser) {
+//             return res.status(409).json({ error: 'Username already exists' });
+//         }
+//         else{
+//             const user = await prisma.user.create({
+//             data: {
+//                 username:username.toLowerCase(),
+//                 password: hashedPassword,
+//             },
+//         });
+
+//         console.log('User Created:', user);
+
+//         const token = generateToken(user);
+//         res.cookie('jwt', token, { httpOnly: true });
+//         res.status(201).redirect('/list');
+//     }
+//     } catch (error) {
+//         console.error('Error:', error); // Log the entire error object
+//         if (error.code === 'P2002') {
+//             return res.status(409).json({ error: 'Username already exists' });
+//         }
+//         res.status(500).json({ error: 'An error occurred during signup' });
+//     }
+// });
+
+// app.post('/logout', (req, res) => {
+//     res.clearCookie('jwt'); // Clear the cookie
+//     res.redirect('/'); // Redirect to login/signup
+//   });
+
+
+// app.listen(3000,()=>{
+//     console.log("Hey, What's up Dawg!?")
+// })
+
+// src/app.js
